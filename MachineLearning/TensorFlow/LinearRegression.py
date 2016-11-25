@@ -1,11 +1,14 @@
 '''
 
 '''
+# source activate envpy3
 
 # Import libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
+
+# Create set of data
 
 
 def generate_points():
@@ -27,6 +30,8 @@ def generate_points():
         y_points.append(y)
     return x_points, y_points
 
+# Graph data
+
 
 def graph_points():
     x_points, y_points = generate_points()
@@ -34,10 +39,42 @@ def graph_points():
     plt.legend()
     plt.show()
 
+# Build Linear Model
+
+def linearRegression():
+    x_point, y_point = generate_points()
+    a = tf.Variable(tf.random_uniform([1], -1.0, 1.0))
+    b = tf.Variable(tf.zeros([1]))
+    y = a * x_point + b
+    cost_function = tf.reduce_mean(tf.square(y - y_point))
+    optimizer = tf.train.GradientDescentOptimizer(0.5)
+    train = optimizer.minimize(cost_function)
+
+    model = tf.initialize_all_variables()
+
+    with tf.Session() as session:
+        session.run(model)
+        print(session.run(a))
+        print(session.run(b))
+        for step in range(0, 21):
+            session.run(train)
+            if (step % 5) == 0:
+                print(session.run(a))
+                print(session.run(b))
+                plt.plot(x_point, y_point,'o',
+                        label='step = {}'
+                        .format(step))
+                plt.plot(x_point,
+                        session.run(a) * 
+                        x_point + 
+                        session.run(b))
+                plt.legend()
+                plt.show()
+
 
 def main():
-    graph_points()
-
+    #graph_points()
+    linearRegression()
 
 if __name__ == '__main__':
     main()
