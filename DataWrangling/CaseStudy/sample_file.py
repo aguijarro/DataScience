@@ -34,3 +34,6 @@ def main():
                 output.write(ET.tostring(element, encoding='utf-8'))
 
         output.write('</osm>')
+
+if __name__ == '__main__':
+    main()
