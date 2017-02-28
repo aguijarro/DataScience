@@ -5,7 +5,7 @@ import pprint
 import re
 import codecs
 import json
-from utils import update_data
+from utils import update_data, update_city
 
 lower = re.compile(r'^([a-z]|_)*$')
 lower_colon = re.compile(r'^([a-z]|_)*:([a-z]|_)*$')
@@ -60,6 +60,10 @@ def get_address(element, node):
     if address:
         if address.has_key('street'):
             address['street_better_name'] = update_data(address['street'])
+        node['address'] = address
+
+        if 'city' in address:
+            address['city_better_name'] = update_city(address['city'])
         node['address'] = address
     return node
 

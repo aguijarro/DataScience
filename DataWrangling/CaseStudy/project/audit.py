@@ -4,6 +4,7 @@ import re
 
 
 street_type_re = re.compile(r'\S+\.?$', re.IGNORECASE)
+city_type_re = re.compile(r'\S+\.?$', re.IGNORECASE)
 
 
 expected = ["Street", "Avenue", "Boulevard", "Drive",
@@ -45,3 +46,30 @@ def audit(input_file):
                                       tag.attrib['v'])
     osm_file.close()
     return street_types, street_types_count
+
+
+def audit_city_type(city_types, city_types_count, city_name):
+    m = city_type_re.search(city_name)
+    if m:
+        city_type = m.group()
+        city_types_count[city_type] += 1
+        if city_type not in expected:
+            city_types[city_type].add(city_name)
+
+
+def is_city_name(elem):
+    return (elem.tag == "tag") and (elem.attrib['k'] == "addr:city")
+
+def audit_city(input_file):
+    osm_file = open(input_file, "r")
+    city_types = defaultdict(set)
+    city_types_count = defaultdict(int)
+    for event, elem in ET.iterparse(osm_file, events=("start",)):
+        if elem.tag == "node" or elem.tag == "way":
+            for tag in elem.iter("tag"):
+                if is_city_name(tag):
+                    audit_city_type(city_types,
+                                      city_types_count,
+                                      tag.attrib['v'])
+    osm_file.close()
+    return city_types, city_types_count

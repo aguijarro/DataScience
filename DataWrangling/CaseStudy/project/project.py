@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 import os
 import pprint
 from sample_file import make_file
-from audit import audit
+from audit import audit, audit_city
 from make_json import process_map
 from analyze_data import draw_data
 
@@ -24,16 +25,24 @@ def main():
     print("Original file size:", get_file_size(TEST_FILE), "MB")
     # Audit addresses
     st_types, st_types_count = audit(TEST_FILE)
+    # Audit city names
+    city_types, city_types_count = audit_city(TEST_FILE)
     # Show data with errors
+    print("** Audit Street **")
     pprint.pprint(dict(st_types))
     pprint.pprint(dict(st_types_count))
+
+    print("** Audit Cities **")
+    pprint.pprint(dict(city_types))
+    pprint.pprint(dict(city_types_count))
     # Make JSON
     process_map(TEST_FILE, True)
     # Analyze data
 
-    #draw_data(dict(st_types_count), ("St", "Street"), (0, 0.15))
-    #draw_data(dict(st_types_count), ("Ave", "Ave.", "Avenue"), (0, 0, 0.15))
-    draw_data(dict(st_types_count), ("Blvd", "Blvd.", "Boulevard"), (0, 0, 0.15))
+    ##draw_data(dict(st_types_count), ("St", "Street"), (0, 0.15))
+    ##draw_data(dict(st_types_count), ("Ave", "Ave.", "Avenue"), (0, 0, 0.15))
+    ##draw_data(dict(st_types_count), ("Blvd", "Blvd.", "Boulevard"), (0, 0, 0.15))
+
 
 if __name__ == '__main__':
     main()
